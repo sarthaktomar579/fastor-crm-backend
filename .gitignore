@@ -1,0 +1,18 @@
+# Dependencies
+node_modules/
+
+# Environment variables (keeps your MongoDB password private)
+.env
+
+# Logs
+*.log
+npm-debug.log*
+yarn-debug.log*
+yarn-error.log*
+
+# OS Files
+.DS_Store
+Thumbs.db
+branch_structure.json
+temp_auto_push.bat
+temp_interactive_push.bat
