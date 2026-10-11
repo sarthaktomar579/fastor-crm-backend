@@ -1,0 +1,275 @@
+{
+  "info": {
+    "_postman_id": "fastor-crm-api-collection",
+    "name": "Fastor CRM REST API - Sarthak Singh Tomar",
+    "description": "Comprehensive Postman Collection for CRM Lead Management REST API (Employee Auth, Public Enquiry, Claim Leads, Claimed Leads)",
+    "schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json"
+  },
+  "variable": [
+    {
+      "key": "baseUrl",
+      "value": "http://localhost:5000",
+      "type": "string"
+    },
+    {
+      "key": "authToken",
+      "value": "",
+      "type": "string"
+    },
+    {
+      "key": "enquiryId",
+      "value": "",
+      "type": "string"
+    }
+  ],
+  "item": [
+    {
+      "name": "0. Health & Docs",
+      "item": [
+        {
+          "name": "API Root & Documentation Index",
+          "request": {
+            "method": "GET",
+            "header": [],
+            "url": {
+              "raw": "{{baseUrl}}/",
+              "host": ["{{baseUrl}}"],
+              "path": [""]
+            }
+          }
+        },
+        {
+          "name": "Health Check",
+          "request": {
+            "method": "GET",
+            "header": [],
+            "url": {
+              "raw": "{{baseUrl}}/api/health",
+              "host": ["{{baseUrl}}"],
+              "path": ["api", "health"]
+            }
+          }
+        }
+      ]
+    },
+    {
+      "name": "1. Authentication (Employee / Counselor)",
+      "item": [
+        {
+          "name": "Register Employee",
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "exec": [
+                  "const res = pm.response.json();",
+                  "if (res.data && res.data.token) {",
+                  "    pm.collectionVariables.set('authToken', res.data.token);",
+                  "}"
+                ],
+                "type": "text/javascript"
+              }
+            }
+          ],
+          "request": {
+            "method": "POST",
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              }
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"name\": \"Sarthak Singh Tomar\",\n  \"email\": \"counselor@fastor.ai\",\n  \"password\": \"Password123\",\n  \"role\": \"counselor\"\n}"
+            },
+            "url": {
+              "raw": "{{baseUrl}}/api/auth/register",
+              "host": ["{{baseUrl}}"],
+              "path": ["api", "auth", "register"]
+            }
+          }
+        },
+        {
+          "name": "Login Employee",
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "exec": [
+                  "const res = pm.response.json();",
+                  "if (res.data && res.data.token) {",
+                  "    pm.collectionVariables.set('authToken', res.data.token);",
+                  "}"
+                ],
+                "type": "text/javascript"
+              }
+            }
+          ],
+          "request": {
+            "method": "POST",
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              }
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"email\": \"counselor@fastor.ai\",\n  \"password\": \"Password123\"\n}"
+            },
+            "url": {
+              "raw": "{{baseUrl}}/api/auth/login",
+              "host": ["{{baseUrl}}"],
+              "path": ["api", "auth", "login"]
+            }
+          }
+        },
+        {
+          "name": "Get Current Employee Profile",
+          "request": {
+            "method": "GET",
+            "header": [
+              {
+                "key": "Authorization",
+                "value": "Bearer {{authToken}}"
+              }
+            ],
+            "url": {
+              "raw": "{{baseUrl}}/api/auth/me",
+              "host": ["{{baseUrl}}"],
+              "path": ["api", "auth", "me"]
+            }
+          }
+        }
+      ]
+    },
+    {
+      "name": "2. Public Enquiries (Unauthenticated)",
+      "item": [
+        {
+          "name": "Submit Public Enquiry Form",
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "exec": [
+                  "const res = pm.response.json();",
+                  "if (res.data && res.data._id) {",
+                  "    pm.collectionVariables.set('enquiryId', res.data._id);",
+                  "}"
+                ],
+                "type": "text/javascript"
+              }
+            }
+          ],
+          "request": {
+            "method": "POST",
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              }
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"name\": \"Aarav Mehta\",\n  \"email\": \"aarav.mehta@example.com\",\n  \"phone\": \"+91 9898765432\",\n  \"courseInterest\": \"Full Stack Web Development\",\n  \"notes\": \"Interested in evening batches, wants placement guidance\",\n  \"source\": \"online_form\"\n}"
+            },
+            "url": {
+              "raw": "{{baseUrl}}/api/enquiries/public",
+              "host": ["{{baseUrl}}"],
+              "path": ["api", "enquiries", "public"]
+            }
+          }
+        }
+      ]
+    },
+    {
+      "name": "3. CRM Leads Management (Protected)",
+      "item": [
+        {
+          "name": "Fetch All Unclaimed Leads",
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "exec": [
+                  "const res = pm.response.json();",
+                  "if (res.data && res.data.length > 0) {",
+                  "    pm.collectionVariables.set('enquiryId', res.data[0]._id);",
+                  "}"
+                ],
+                "type": "text/javascript"
+              }
+            }
+          ],
+          "request": {
+            "method": "GET",
+            "header": [
+              {
+                "key": "Authorization",
+                "value": "Bearer {{authToken}}"
+              }
+            ],
+            "url": {
+              "raw": "{{baseUrl}}/api/enquiries/unclaimed",
+              "host": ["{{baseUrl}}"],
+              "path": ["api", "enquiries", "unclaimed"]
+            }
+          }
+        },
+        {
+          "name": "Claim Lead (Assign to Counselor)",
+          "request": {
+            "method": "PATCH",
+            "header": [
+              {
+                "key": "Authorization",
+                "value": "Bearer {{authToken}}"
+              }
+            ],
+            "url": {
+              "raw": "{{baseUrl}}/api/enquiries/{{enquiryId}}/claim",
+              "host": ["{{baseUrl}}"],
+              "path": ["api", "enquiries", "{{enquiryId}}", "claim"]
+            }
+          }
+        },
+        {
+          "name": "Fetch Leads Claimed by Logged-in Counselor",
+          "request": {
+            "method": "GET",
+            "header": [
+              {
+                "key": "Authorization",
+                "value": "Bearer {{authToken}}"
+              }
+            ],
+            "url": {
+              "raw": "{{baseUrl}}/api/enquiries/claimed",
+              "host": ["{{baseUrl}}"],
+              "path": ["api", "enquiries", "claimed"]
+            }
+          }
+        },
+        {
+          "name": "Fetch Single Lead Details",
+          "request": {
+            "method": "GET",
+            "header": [
+              {
+                "key": "Authorization",
+                "value": "Bearer {{authToken}}"
+              }
+            ],
+            "url": {
+              "raw": "{{baseUrl}}/api/enquiries/{{enquiryId}}",
+              "host": ["{{baseUrl}}"],
+              "path": ["api", "enquiries", "{{enquiryId}}"]
+            }
+          }
+        }
+      ]
+    }
+  ]
+}
